@@ -1,0 +1,103 @@
+if (fullscreen) {
+			flags = flags | SDL_WINDOW_FULLSCREEN;
+		}
+
+		if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
+			std::cout << "Subsystems Initialized!\n";
+
+			window = SDL_CreateWindow("Test Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 500, 500, flags);
+			if (window) {
+				std::cout << "Window Created!\n";
+				SDL_SetWindowMinimumSize(window, WIDTH, HEIGHT);
+			}
+			renderer = SDL_CreateRenderer(window, -1, 0);
+			if (renderer) {
+				SDL_SetRenderDrawColor(renderer, 121, 121, 121, 255);
+				std::cout << "Renderer created!\n";
+				SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+				isRunning = true;
+			}
+
+		}
+
+		run();
+
+		//frees memory associated with renderer and window
+		SDL_DestroyRenderer(renderer);
+		SDL_DestroyWindow(window);	//error here
+		SDL_Quit();
+
+		SDL_Init(SDL_INIT_VIDEO);
+		window = SDL_CreateWindow(
+			"An SDL2 window",                  // window title
+			SDL_WINDOWPOS_UNDEFINED,           // initial x position
+			SDL_WINDOWPOS_UNDEFINED,           // initial y position
+			WIDTH,                               // width, in pixels
+			HEIGHT,                               // height, in pixels
+			SDL_WINDOW_OPENGL                  // flags - see below
+		);
+
+		if (window == NULL) {
+			// In the case that the window could not be made...
+			printf("Could not create window: %s\n", SDL_GetError());
+			return 1;
+		}
+
+		renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+*/
+switch (event.type) {
+		case SDL_QUIT:
+			isRunning = false;
+			break;
+		default:
+			break;
+		
+		
+		
+		
+		}
+
+
+
+		
+//constants
+int WIDTH = 1200;
+int HEIGHT = 800;
+int FPS = 60;
+SDL_Renderer* renderer;
+SDL_Window* window;
+bool isRunning;
+bool fullscreen;
+int flags;
+Projection* proj;
+Camera* cam;
+Object3d* object3d;
+ObjReader* reader;
+SDL_bool done;
+std::array<float, 3> cam_pos;
+int H_HEIGHT;
+int H_WIDTH;
+int frameDelay;
+int delaytime = 0;
+
+
+void get_object_from_file(char* filename) {
+	reader = new ObjReader();
+	reader->read(filename);
+	reader->readfaces(filename);
+
+	object3d = new Object3d(reader->vvertices, reader->faces, cam, proj);
+	//ObjReader::display_vertices(object3d->vertices);
+}
+
+void create_objects() {
+	cam = new Camera(WIDTH, HEIGHT, cam_pos);
+	cam->create_all_matrix();
+	proj = new Projection(H_WIDTH, H_HEIGHT, cam);
+	get_object_from_file((char*)"resources/house.obj");
+	object3d->rotate_y(M_PI / 4);
+
+}
+
+
+
