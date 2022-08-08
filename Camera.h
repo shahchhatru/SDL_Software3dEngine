@@ -37,15 +37,11 @@ public:
 		initialize();
 	}
 
-	void control(SDL_Event* event,bool &isRunning) {
-		SDL_PollEvent(event);
-		if (event->type == SDL_QUIT) {
-			isRunning = false;
-			std::cout << "event detected" << std::endl;
-		}
-		if (event->type == SDL_KEYDOWN) {
-			switch (event->key.keysym.sym) {
-				std::cout << "event detected" << event->key.keysym.sym<< std::endl;
+	void control(SDL_Keysym& event) {
+		
+		
+			switch (event.sym) {
+				std::cout << "event detected" << event.sym<< std::endl;
 
 			case SDLK_a:
 				matrixTransformation::scalar_multiply(right, moving_speed);
@@ -78,24 +74,24 @@ public:
 				std::cout << "event detected e" << std::endl;
 				break;
 			default:
-				std::cout << "event detected default" << event->key.keysym.sym << std::endl;
+				std::cout << "event detected default" << event.sym << std::endl;
 				break;
 
 			}
-			if (event->key.keysym.sym == SDLK_LEFT) {
+			if (event.sym == SDLK_LEFT) {
 				std::cout << "event detected default left key" << std::endl;
 				camera_yaw(-1 * rotation_speed);
 			}
-			if (event->key.keysym.sym == SDLK_RIGHT) {
+			if (event.sym == SDLK_RIGHT) {
 				camera_yaw( rotation_speed);
 			}
-			if (event->key.keysym.sym == SDLK_UP) {
+			if (event.sym == SDLK_UP) {
 				camera_pitch(-rotation_speed);
 			}
-			if (event->key.keysym.sym == SDLK_DOWN) {
+			if (event.sym == SDLK_DOWN) {
 				camera_pitch(rotation_speed);
 			}
-		}
+		
 	}
 
 	void create_translate_matrix() {

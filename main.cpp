@@ -1,16 +1,26 @@
 #include<iostream>
 #include"SDL.h"
 #undef main
-#include"Camera.h"
-#include"Projection.h"
-#include"Object3d.h"
-#include"ObjReader.h"
-#include"SoftwareRenderer.h"
 
+#include"Engine.h"
 
 int main() {
 	
-	SoftwareRender* soft = new SoftwareRender();
-	soft->init();
+	Engine* eng = new Engine();
+	eng->Init();
+	float delaytime=0.0f;
+	int delay;
+	float  frameDelay = 1 / 60;
+	eng->run();
+	
 
 }
+
+/*
+SoftwareRender* soft = new SoftwareRender();
+	soft->init();
+	int frame_time = SDL_GetTicks() - frameStart;
+			if (frameDelay > frame_time) {
+				delaytime=frameDelay - frame_time;
+			}
+*/

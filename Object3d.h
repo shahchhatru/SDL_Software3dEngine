@@ -21,6 +21,8 @@ public:
 	//std::array<std::array<float, 4>, 4> rotation_matrix;
 	Camera* cam;
 	Projection* proj;
+	std::vector<std::array<float, 4>> vvertices;
+	
 
 	Object3d(std::vector<std::array<float,4>> &v, std::vector<std::vector<int>>& f,Camera *c,Projection* p) {
 		vertices = v;
@@ -33,14 +35,19 @@ public:
 
 	}
 
-	void screen_projection(SDL_Renderer * renderer,int delaytime) {
-	
-		vertices = matrixTransformation::matrixMultiply_nx4(vertices, cam->camera_matrix);
-		vertices = matrixTransformation::matrixMultiply_nx4(vertices, proj->projection_matrix);
+	void set_matrix() {
+		vvertices = matrixTransformation::matrixMultiply_nx4(vertices, cam->camera_matrix);
+		vvertices = matrixTransformation::matrixMultiply_nx4(vvertices, proj->projection_matrix);
 		matrixTransformation::normalize2dvec(vertices);
+		matrixTransformation::normalize2dvec(vvertices);
 		// vertices[(vertices > 2) | (vertices < -2)] = 0
-		vertices = matrixTransformation::matrixMultiply_nx4(vertices, proj->to_screen_matrix);
+		vvertices = matrixTransformation::matrixMultiply_nx4(vvertices, proj->to_screen_matrix);
 
+	}
+
+	void screen_projection(SDL_Renderer * renderer) {
+	
+		
 		SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 		std::cout << "drawing polygon" << std::endl;
 		int sk = faces.size();
@@ -53,28 +60,27 @@ public:
 			
 			for (int i = 0; i < s; i++) {
 				if (i != (s - 1)) {
-					int x1 = (int)(vertices[index[i]][0] + 0.5);
-					int y1 = (int)(vertices[index[i]][1] + 0.5);
-					int x2 = (int)(vertices[index[i + 1]][0] + 0.5);
-					int y2 = (int)(vertices[index[i + 1]][1] + 0.5);
+					int x1 = (int)(vvertices[index[i]][0] + 0.5);
+					int y1 = (int)(vvertices[index[i]][1] + 0.5);
+					int x2 = (int)(vvertices[index[i + 1]][0] + 0.5);
+					int y2 = (int)(vvertices[index[i + 1]][1] + 0.5);
 					//std::cout << x1 <<" " << y1 <<" " << x2<<" " << y2 << std::endl;
 					SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
-					SDL_RenderPresent(renderer);
+				
 				}
 				else {
-					int x1 = (int)(vertices[index[i]][0] + 0.5);
-					int y1 = (int)(vertices[index[i]][1] + 0.5);
-					int x2 = (int)(vertices[index[0]][0] + 0.5);
-					int y2 = (int)(vertices[index[0]][1] + 0.5);
+					int x1 = (int)(vvertices[index[i]][0] + 0.5);
+					int y1 = (int)(vvertices[index[i]][1] + 0.5);
+					int x2 = (int)(vvertices[index[0]][0] + 0.5);
+					int y2 = (int)(vvertices[index[0]][1] + 0.5);
 					// std::cout << x1 << " " << y1 << " " << x2 << " " << y2 << std::endl;
 					SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
-					SDL_RenderPresent(renderer);
+					//SDL_RenderPresent(renderer);
 				}
 
 			}
 		}
 		SDL_RenderPresent(renderer);
-		SDL_Delay(delaytime);
 		printf("draw called");
 		
 	}
@@ -88,8 +94,8 @@ public:
 
 	}
 
-	void draw(SDL_Renderer* renderer,int delaytime) {
-		screen_projection(renderer,delaytime);
+	void draw(SDL_Renderer* renderer) {
+		screen_projection(renderer);
 		//movement();
 
 	}

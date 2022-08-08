@@ -117,7 +117,7 @@ public:
 		SDL_PollEvent(&event);
 		
 		//object3d->draw(renderer);
-		cam->control(&event,isRunning);
+		//cam->control(&event,isRunning);
 		
 	}
 
